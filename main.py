@@ -19,10 +19,13 @@ template_id = os.environ["TEMPLATE_ID"]
 
 
 def get_weather():
-  url = "http://autodev.openspeech.cn/csp/api/v2.1/weather?openId=aiuicus&clientType=android&sign=android&city=" + city
-  res = requests.get(url).json()
-  weather = res['data']['list'][0]
-  return weather['weather'], math.floor(weather['temp'])
+  # 使用 wttr.in 免费天气 API（无需注册，直接可用）
+  url = f"https://wttr.in/{city}?format=j1&lang=zh"
+  res = requests.get(url, headers={"User-Agent": "curl/7.0"}).json()
+  current = res['current_condition'][0]
+  weather_desc = current['lang_zh'][0]['value']
+  temperature = int(current['temp_C'])
+  return weather_desc, temperature
 
 def get_count():
   delta = today - datetime.strptime(start_date, "%Y-%m-%d")
