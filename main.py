@@ -10,6 +10,7 @@ today = datetime.now()
 start_date = os.environ['START_DATE']
 city = os.environ['CITY']
 birthday = os.environ['BIRTHDAY']
+weather_key = os.environ['WEATHER_KEY']
 
 app_id = os.environ["APP_ID"]
 app_secret = os.environ["APP_SECRET"]
@@ -19,12 +20,11 @@ template_id = os.environ["TEMPLATE_ID"]
 
 
 def get_weather():
-  # 使用 wttr.in 免费天气 API（无需注册，直接可用）
-  url = f"https://wttr.in/{city}?format=j1&lang=zh"
-  res = requests.get(url, headers={"User-Agent": "curl/7.0"}).json()
-  current = res['current_condition'][0]
-  weather_desc = current['lang_zh'][0]['value']
-  temperature = int(current['temp_C'])
+  # 使用 OpenWeatherMap 免费 API
+  url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={weather_key}&units=metric&lang=zh_cn"
+  res = requests.get(url).json()
+  weather_desc = res['weather'][0]['description']
+  temperature = math.floor(res['main']['temp'])
   return weather_desc, temperature
 
 def get_count():
